@@ -8,7 +8,7 @@ pipeline {
       steps {
         checkout([$class: 'GitSCM',
                   branches: [[name: '*/main']],
-                  userRemoteConfigs: [[url: 'https://github.com/vigi06/project-c42.git']]])
+                  userRemoteConfigs: [[url: 'https://github.com/trupti-sahoo/upgrad-trupti-jenkins']]])
       }
     }
     
@@ -23,10 +23,10 @@ pipeline {
       steps {
         script {     
           sh '''
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com
-          docker build -t project-c42:${BUILD_NUMBER} .
-          docker tag project-c42:${BUILD_NUMBER} 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
-          docker push 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 753280441213.dkr.ecr.us-east-1.amazonaws.com
+          docker build -t jenkins:${BUILD_NUMBER} .
+          docker tag jenkins:${BUILD_NUMBER} 753280441213.dkr.ecr.us-east-1.amazonaws.com/jenkins:${BUILD_NUMBER}
+          docker push 753280441213.dkr.ecr.us-east-1.amazonaws.com/jenkins:${BUILD_NUMBER} 
           '''
         }
       }
@@ -35,8 +35,8 @@ pipeline {
     stage('Cleanup the docker image') {
       steps {
         script {
-          sh 'docker rmi 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}'
-          sh 'docker rmi project-c42:${BUILD_NUMBER}'
+          sh 'docker rmi 753280441213.dkr.ecr.us-east-1.amazonaws.com/jenkins:${BUILD_NUMBER}'
+          sh 'docker rmi jenkins:${BUILD_NUMBER}'
         }
       }
     }
@@ -45,9 +45,9 @@ pipeline {
       steps {
         script {
           sh '''
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 303150498045.dkr.ecr.us-east-1.amazonaws.com
-          docker pull 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
-          docker run -d -p 8080:8081 303150498045.dkr.ecr.us-east-1.amazonaws.com/project-c42:${BUILD_NUMBER}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 753280441213.dkr.ecr.us-east-1.amazonaws.com
+          docker pull 753280441213.dkr.ecr.us-east-1.amazonaws.com/jenkins:${BUILD_NUMBER}
+          docker run -d -p 8080:8081 753280441213.dkr.ecr.us-east-1.amazonaws.com/jenkins:${BUILD_NUMBER}
           '''
         }
       }
